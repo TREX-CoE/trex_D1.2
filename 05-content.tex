@@ -4,7 +4,7 @@
 \newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
 \def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
 
-\section{Introduction}
+\section{Summary of the report at month 6}
 
 
 The ultimate goal of \ac{QMCkl} is to provide a high-performance
@@ -19,46 +19,13 @@ The documentation of the current status of the library is available
 at \url{https://trex-coe.github.io/qmckl}, and the source code is
 available on the GitHub repository at \url{https://github.com/trex-coe/qmckl}.
 
+The focus is made on documentation via literate programming using {\orgmode}
+files.\cite{schulte_2012,orgmode} Hence, the code and the documentation are
+produced with the same source files, allowing the programmers to write \LaTex
+formulas and use tables or figures together the corresponding code in the same 
+files.
 
-\subsection{Literate programming}
-
-In a traditional code, most of the lines of source files are code,
-scripts, {\Makefile}s, and only a few lines are comments explaining
-parts of the code that are non-trivial to understand. The
-documentation of the program is usually written in a separate
-directory, and is often outdated with respect to the current version
-of the code.
-
-Literate programming\cite{knuth_1992} is a different approach to
-programming, where the program is considered as a publishable-quality
-document. Most of the lines of the source files are text,
-mathematical formulas, tables, figures, \textit{etc}, and the lines of
-code are just the translation in a computer language of the ideas
-and algorithms expressed in the text. More importantly, the ``document'' is
-structured like a text document with sections, subsections, a bibliography, and a table of contents. The place where pieces of code
-appear are the places where they should belong for the reader to
-understand the logic of the program, not the places where the compiler
-expects to find them. Both the publishable-quality document and the
-binary executable are produced from the same source files. 
-
-Literate programming is particularly well adapted in this context, as
-the central part of this project is the documentation of an
-\ac{API}. The implementation of the algorithms is just an expression
-of the algorithms in a language that can be compiled, so that the
-correctness of the algorithms can be tested.
-
-We have chosen to write the source files in {\orgmode}
-format\cite{schulte_2012,orgmode}, as any text editor can be used to
-edit {\orgmode} files. To produce the documentation, there exists
-multiple possibilities to convert {\orgmode} files into different
-formats such as \ac{HTML} or \ac{PDF}. The source code is easily
-extracted from the {\orgmode} files invoking the Emacs text editor
-from the command-line in the {\Makefile}, and then the produced files
-are compiled as usual.  Moreover, within the Emacs text editor the
-source code blocks can be executed interactively, as in Jupyter
-notebooks\cite{Kluyver_2016}, but with the advantage that multiple
-languages can be used in the same notebook.
-
+%% TODO : I am here
 \subsection{Algorithms}
 
 Some users will run calculations using as a trial wave function a
@@ -494,7 +461,5 @@ implementation of the kernels is just starting.
 
 \clearpage
 
-\input{qmckl_context}
-\input{qmckl_ao}
 % TODO : include here documentation
 
