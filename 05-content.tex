@@ -4,89 +4,132 @@
 \newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
 \def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
 
-\section{Summary of the report at month 6}
+\section{Introduction}
 
+There are three different \ac{QMC} codes in the TREX \ac{CoE}, each
+with its own strengths. Instead of optimizing the three codes
+independently for exascale architectures, or re-writing a new
+monolithic code, our strategy is instead to design a new library,
+\ac{QMCkl}, containing the best of each code. The functions available
+in this library will be allow all three codes to benefit from the
+optimal implementations of the major kernels of \ac{QMC}. We hope that
+this library will be adopted by the community beyond the \ac{TREX} \ac{CoE}.
+
+The three main objectives driving the development of \ac{QMCkl} are
+performance, productivity and portability.
+
+\subsection{Performance}
 
 The ultimate goal of \ac{QMCkl} is to provide a high-performance
-implementation of the main kernels of \ac{QMC}. In this particular
-\ac{WP}, we focus on the definition of the \ac{API}, the tests,
-and on a \emph{pedagogical} presentation of the algorithms.  We expect
-the \ac{HPC} experts to use this repository as a reference for re-writing
-optimized versions of the functions described in this library, using
-the same \ac{API}.
+implementation of the main kernels involved in \ac{QMC} methods,
+efficient on exascale machines. 
+In this particular \ac{WP}, we focus on the
+definition of the \ac{API}, the tests, and on a \emph{pedagogical}
+presentation of the algorithms. The high-performance aspects are
+delegated to \ac{WP}3, but there is nevertheless a strong interaction
+between these two \acp{WP} because the design of the data structures
+and the \ac{API} are guided by the possibility to enable a
+high-performance implementation of the computational kernels.
+For instance, the data structures should be such that the memory
+access patterns are efficient both on CPUs and accelerators, and the
+library should not be too restrictive on how the memory is allocated
+to give enough freedom to the developers of the \ac{HPC} variants to
+allocate memory on the CPU or GPU, pinned or not, etc.
+
+The main objective of this pedagogical implementation of the library
+is to provide a reference implementation of the kernels such that
+\ac{HPC} experts will be able to use it to rewrite optimized versions
+of the functions described in this library, using the same \ac{API}.
+
+\subsection{Portability}
+
+\ac{QMCkl} should take advantage of exascale machines. In terms of hardware,
+many different possibilities are proposed to design exascale
+machines. Some are CPU-based, others are GPU-based, multiple vendors
+propose different CPUs (Intel, AMD, ARM, \dots) or GPUs (Intel,
+NVidia, AMD, \dots). In this context, we have to propose a library that
+will take advantage of any of these combinations and we can't rely on 
+a vendor-specific software stack like Intel's \ac{MKL} or Nvidia's
+Cuda language. Instead, we
+will rely on free software and standards such as OpenMP, but the BSD
+licence we have adopted also lets the community modify \ac{QMCkl} to propose 
+hardware-specific implementations.
+
+For maximum portability, we have chosen to write the library in the C
+language. In this way, we guarantee that \ac{QMCkl} will be usable in
+\emph{all} the QMC codes used by the community, although these
+codes are written in different prgramming languages (C, C++, Python,
+Fortran, etc.).
+
+\subsection{Productivity}
+
+\ac{QMC} methods are still under heavy development. Therefore,
+scientists need to be able to understand the code to modify the
+algorithms and propose new methods. It is not realistic to believe
+that any physicist will be able to read and develop a highly optimized
+C++ code tuned by HPC experts. In the same way, it is not realistic to
+believe that a code written by any physicist is designed in such a way
+that it can be easily ported to GPU by a HPC expert. If a compromise
+is chosen between these two extremes, it is likely that it will
+converge to a code difficult to maintain by the physicist and
+difficult to optimize by the HPC expert. Therefore our choice was to
+develop at least two libraries with the same \ac{API}: first a
+\emph{pedagogical} implementation (the objective of the current \ac{WP})
+designed for physicists/chemists, and then one or many
+high-performance implementations of this library.
 
 The documentation of the current status of the library is available
 at \url{https://trex-coe.github.io/qmckl}, and the source code is
 available on the GitHub repository at \url{https://github.com/trex-coe/qmckl}.
 
-The focus is more on documentation via literate programming using {\orgmode}
-files.\cite{schulte_2012,orgmode} Hence, the code and the documentation are
-produced with the same source files, allowing the programmers to write \LaTeX
-formulas and use tables or figures together the corresponding code in the same 
+\section{Design of the library}
+
+\subsection{Literate programming}
+
+As the the focus of this library is documentation, we use literate
+programming using {\orgmode} files.\cite{schulte_2012,orgmode}
+Hence, the code and the documentation are produced with the same
+source files, allowing the programmers to write \LaTeX formulas and
+use tables or figures together the corresponding code in the same
 files.
+This method has proven to be particularly efficient in maintaining the
+documentation consistent with the source code, and literate
+programming is now becoming a very popular technique thanks to the
+development of Jupyter notebooks.
+Here, we have chosen {\orgmode} as it allows the simulatenous usage of
+multiple languages in the same notebook, and also doesn't impose to
+use a web browser to edit the notebooks.
+
+\subsection{Configuration}
+
+In the first months, a large effort was put in preparing the
+foundations of the library: the coding standards and rules, GNU Autotools
+configuration scripts, Makefiles, scripts to generate automatically
+the code and the documentation, unit testing, continuous integration,
+etc. It is important not to neglect the importance of all these
+developments which are not directly visible from outside of the project.
+Having spent a large effort of preparation pays a lot in the long term
+since is can dramatically enhance the productivity of the contributors
+of the library.
+Now that this effort has been done, we are in a position where we can
+start be productive in implementing multiple kernels.
+
+\section{Implemented kernels}
+
+In the last few months, the majority of the effort was put in
+implementing and documenting kernels. Our objective for this milestone
+was to provide a library that is capable of computing the local energy
+(the central quantity in \ac{QMC}) for any arbitrary system described
+by a Slater determinant using a Gaussian atomic basis set. The
+implemented kernels are described in this section.
+
+%% TODO : kernels
+
+\section{Applications of QMCkl}
+
+
 
 %% TODO : I am here
-\subsection{Algorithms}
-
-Some users will run calculations using as a trial wave function a
-single determinant with thousands of electrons, and some other users
-will run calculations with a small number of electrons but with millions
-of Slater determinants. These two different profiles impose that the
-library has to be efficient both in the regime of small and large numbers
-of electrons. When the number of electrons is large, interactions
-become local and linear-scaling algorithms can be introduced. However,
-such algorithms become inefficient for small sizes.  Hence, to
-satisfy these two regimes, multiple algorithms will be implemented to
-achieve the same task, and the library will decide at run time which
-algorithm should use to minimize the time to solution.
-
-
-\subsection{Dependencies}
-
-Dependencies in other software components is a critical point that
-should be considered seriously. If a user is not able to install the
-required external libraries and tools, the user is not going to be
-able to use our library. So the list of external dependencies should
-be kept as small as possible.  External libraries should be used
-\emph{only} if their use is strongly justified, and if we are sure
-that the users will be able to have access to them.
-
-The dependencies needed to use pre-compiled versions of the library
-are \ac{BLAS} and \ac{LAPACK}.
-
-The dependencies needed to compile the code are
-a C and a Fortran compiler, GNU make, \ac{BLAS} and \ac{LAPACK}, and
-$\mu$nit\cite{munit} for building the unit tests.
-
-The dependencies needed to create the \ac{HTML} documentation are
-Emacs~26 and the package Emacs-htmlize.
-
-\subsection{Packaging}
-
-We intend to use the GNU build system, Autotools,\cite{autotools} for
-configuration and installation scripts.
-Although there exists more modern build tools, we have chosen a
-solution that will be easy for the end user, and which is one of the
-most reliable in terms of portability among different architectures.
-
-In the future, we plan to provide \texttt{.deb} and \texttt{.rpm}
-packages for the most common Linux distributions, as well as a package
-for the Spack package manager\cite{spack}.
-
-
-\subsection{Continuous integration}
-
-Continuous integration has been setup on the GitHub platform. Upon
-receiving a pull request, the repository is automatically cloned on a virtual machine. The source code is then extracted from the {\orgmode}
-files and the library is compiled. Then the unit tests are compiled
-and linked together with the library. If all the tests pass, the
-pull request is considered valid, and can be merged.
-
-When the code is updated, the documentation is automatically built and
-the server hosting the documentation is updated, such that the web
-site containing the documentation is always synchronized with the
-latest version of the master branch of the GitHub repository.
-
 
 \section{Source code}
 
