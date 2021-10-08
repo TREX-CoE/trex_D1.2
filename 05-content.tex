@@ -3,26 +3,30 @@
 \newcommand{\context}{\mintinline{shell}{context}}
 \newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
 \def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
+\newcommand{\qmcchem}{\textsc{QMC=Chem}}
+\newcommand{\champ}{\textsc{Champ}}
+\newcommand{\turbo}{\textsc{TurboRVB}}
 
 \section{Introduction}
 
-There are three different \ac{QMC} codes in the TREX \ac{CoE}, each
-with its own strengths. Instead of optimizing the three codes
-independently for exascale architectures, or re-writing a new
-monolithic code, our strategy is instead to design a new library,
-\ac{QMCkl}, containing the best of each code. The functions available
-in this library will be allow all three codes to benefit from the
-optimal implementations of the major kernels of \ac{QMC}. We hope that
-this library will be adopted by the community beyond the \ac{TREX} \ac{CoE}.
+There are three different \ac{QMC} codes in the \ac{TREX} \ac{CoE},
+\qmcchem{}, \turbo{}, and \champ{}, each with its own strengths and
+weaknesses. Instead of optimizing the three codes independently for
+exascale architectures, or re-writing a new monolithic code, our
+strategy is instead to design a new library, \ac{QMCkl}, containing
+the best of each code. The functions available in this library will
+allow all three codes to benefit from the optimal implementations of
+the major kernels of \ac{QMC}. We hope that this library will be
+adopted by the community beyond the \ac{TREX} \ac{CoE}.
 
 The three main objectives driving the development of \ac{QMCkl} are
-performance, productivity and portability.
+\emph{performance}, \emph{productivity} and \emph{portability}.
 
 \subsection{Performance}
 
 The ultimate goal of \ac{QMCkl} is to provide a high-performance
-implementation of the main kernels involved in \ac{QMC} methods,
-efficient on exascale machines. 
+implementation of the main computational kernels involved in \ac{QMC}
+methods, well adapted to exascale machines.
 In this particular \ac{WP}, we focus on the
 definition of the \ac{API}, the tests, and on a \emph{pedagogical}
 presentation of the algorithms. The high-performance aspects are
@@ -44,20 +48,20 @@ of the functions described in this library, using the same \ac{API}.
 \subsection{Portability}
 
 \ac{QMCkl} should take advantage of exascale machines. In terms of hardware,
-many different possibilities are proposed to design exascale
-machines. Some are CPU-based, others are GPU-based, multiple vendors
-propose different CPUs (Intel, AMD, ARM, \dots) or GPUs (Intel,
-NVidia, AMD, \dots). In this context, we have to propose a library that
-will take advantage of any of these combinations and we can't rely on 
+many different architectural designs are proposed for exascale
+suercomputers. Some are CPU-based, others are GPU-based, multiple vendors
+propose different CPUs (Intel, AMD, ARM,~\dots) or GPUs (Intel,
+NVidia, AMD,~\dots). In this context, we have to propose a library that
+will take advantage of any of these combinations so we can't rely on 
 a vendor-specific software stack like Intel's \ac{MKL} or Nvidia's
 Cuda language. Instead, we
 will rely on free software and standards such as OpenMP, but the BSD
-licence we have adopted also lets the community modify \ac{QMCkl} to propose 
-hardware-specific implementations.
+licence we have adopted also gives the freedom to the community to
+modify \ac{QMCkl} and propose vendor-specific implementations.
 
 For maximum portability, we have chosen to write the library in the C
 language. In this way, we guarantee that \ac{QMCkl} will be usable in
-\emph{all} the QMC codes used by the community, although these
+\emph{all} the QMC codes used by the \ac{QMC} community, although these
 codes are written in different prgramming languages (C, C++, Python,
 Fortran, etc.).
 
@@ -66,21 +70,18 @@ Fortran, etc.).
 \ac{QMC} methods are still under heavy development. Therefore,
 scientists need to be able to understand the code to modify the
 algorithms and propose new methods. It is not realistic to believe
-that any physicist will be able to read and develop a highly optimized
-C++ code tuned by HPC experts. In the same way, it is not realistic to
-believe that a code written by any physicist is designed in such a way
-that it can be easily ported to GPU by a HPC expert. If a compromise
+that any physicist/chemist will be able to read and develop a highly optimized
+C++ code tuned by HPC experts. Similarly, it is not realistic
+either to believe that a code written by a random physicist/chemist will
+be be easily ported to GPU by a HPC expert without breaking deeply the
+structure of the code. If a compromise
 is chosen between these two extremes, it is likely that it will
 converge to a code difficult to maintain by the physicist and
 difficult to optimize by the HPC expert. Therefore our choice was to
 develop at least two libraries with the same \ac{API}: first a
 \emph{pedagogical} implementation (the objective of the current \ac{WP})
-designed for physicists/chemists, and then one or many
-high-performance implementations of this library.
-
-The documentation of the current status of the library is available
-at \url{https://trex-coe.github.io/qmckl}, and the source code is
-available on the GitHub repository at \url{https://github.com/trex-coe/qmckl}.
+designed for physicists/chemists, and then multiple high-performance
+implementations of this library.
 
 \section{Design of the library}
 
@@ -89,8 +90,8 @@ available on the GitHub repository at \url{https://github.com/trex-coe/qmckl}.
 As the the focus of this library is documentation, we use literate
 programming using {\orgmode} files.\cite{schulte_2012,orgmode}
 Hence, the code and the documentation are produced with the same
-source files, allowing the programmers to write \LaTeX formulas and
-use tables or figures together the corresponding code in the same
+source files, allowing the programmers to write \LaTeX{} formulas and
+use tables or figures together with the corresponding code in the same
 files.
 This method has proven to be particularly efficient in maintaining the
 documentation consistent with the source code, and literate
@@ -98,7 +99,7 @@ programming is now becoming a very popular technique thanks to the
 development of Jupyter notebooks.
 Here, we have chosen {\orgmode} as it allows the simulatenous usage of
 multiple languages in the same notebook, and also doesn't impose to
-use a web browser to edit the notebooks.
+use a web browser for editing.
 
 \subsection{Configuration}
 
@@ -112,7 +113,7 @@ Having spent a large effort of preparation pays a lot in the long term
 since is can dramatically enhance the productivity of the contributors
 of the library.
 Now that this effort has been done, we are in a position where we can
-start be productive in implementing multiple kernels.
+are highly productive in implementing new kernels.
 
 \section{Implemented kernels}
 
@@ -120,13 +121,74 @@ In the last few months, the majority of the effort was put in
 implementing and documenting kernels. Our objective for this milestone
 was to provide a library that is capable of computing the local energy
 (the central quantity in \ac{QMC}) for any arbitrary system described
-by a Slater determinant using a Gaussian atomic basis set. The
-implemented kernels are described in this section.
+by a Slater determinant using a Gaussian atomic basis set. We have
+reached successfully this stage, and the implemented kernels are
+described in this section.
 
-%% TODO : kernels
+The documentation of the current status of the library is available
+at \url{https://trex-coe.github.io/qmckl}, and the source code is
+available on the GitHub repository at \url{https://github.com/trex-coe/qmckl}.
+
+% TODO: KERNELS HERE
+
+\subsection{Introduction of TREXIO}
+
+The input of a \ac{QMC} calculation is a wave function, which
+contains usually a large number of parameters of different nature:
+nuclear coordinates, atomic basis set parameters, pseudo-potential
+parameters, molecular orbital coefficients, Slater determinant
+expansion, etc.
+Hence, initializing \ac{QMCkl} can quickly become cumbersome.
+
+TREXIO is the input/output library which is being developed in
+\ac{WP}2. It allows to store all the information relative to a wave
+function in a file, and provides functions to retrieve easily all
+these parameters. 
+
+To simplify the initialization procedure of the library, we have
+introduced the possibility to load in a single function call all the
+wave function parameters contained in a TREXIO file. This simple
+change is extremely beneficial to the user experience.
+
 
 \section{Applications of QMCkl}
 
+The proposed library can already be used in production and for
+methodological developments. A few examples are presented in this section.
+
+\subsection{Jastrow factor in QMC=Chem}
+
+The strength of \qmcchem{} is large multi-determinant expansion, so very
+little effort was put in the development of the Jatrow factor. Only the
+simplest form of Jastrow factor was available. As show above, the
+sophisticated form of Jastrow factor developed in \champ{} was introduced
+in \ac{QMCkl}, so this functionality has been made quickly available
+in \qmcchem.
+
+\subsection{Sherman-Morrison-Woodbury kernels in QMC=Chem}
+
+The Sherman-Morrison-Woodbury formula is the most important kernel in
+simulations involving large multi-determinant expansions. Hence, it has
+been carefully optimized in \qmcchem{} in the past. The kernels
+developed in \ac{QMCkl} were introduced in \qmcchem{} in order
+to compare the performance of the library with \qmcchem{}. The
+comparisons are still ongoing, but is now easy to measure the
+efficiency of the developed kernels since we can now measure their
+performance beyond benchmark situations, under real simulation conditions.
+
+\subsection{Exploratory methods using neural networks}
+
+\subsection{Exascale-related algorithms (\ac{WP4})}
+
+\subsection{Debugging TREXIO files}
+
+% Computing MO overlap to check validity of basis and MOs in trexio
+
+\subsection{Future applications}
+
+% - Computation of DFT grids in QP
+% - Computation of AOs in TurboRVB
+% - Jastrow in CHAMP
 
 
 %% TODO : I am here
