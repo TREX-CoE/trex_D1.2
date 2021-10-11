@@ -130,6 +130,80 @@ at \url{https://trex-coe.github.io/qmckl}, and the source code is
 available on the GitHub repository at \url{https://github.com/trex-coe/qmckl}.
 
 % TODO: KERNELS HERE
+\subsection{Native linear algebra functions}
+
+One of the main development guidelines is to maximize the use
+of \ac{BLAS} like operations in the main kernels. The main \ac{BLAS} operations are
+as follows:
+
+\begin{itemize}
+\item Level 1 - Operations (e.g. scalar product) on two vectors.
+\item Level 2 - Operations involving Matrix and vector (e.g. Matrix vector product).
+\item Level 3 - Operations involving two matrices (Matrix times Matrix).
+\end{itemize}
+
+Incorporating these basic operations in developing the main algorithms is key to
+acheive an optimal implementation of the library. However, these key BLAS
+functions depend on the type of hardware (i.e. CPU, GPU, or FPGA) and require a
+tailored approach. Therefore, in \ac{QMCkl}, we have chosen to abstract the
+calls to such libraries with standard \ac{QMCkl} functions such as
+\mintinline{C}{qmckl_dgemm} and \mintinline{C}{qmckl_invert}. This has a
+two-fold advantage of standardizing the API and enabling hardware specific
+optimizations by HPC experts without breaking user-space.
+
+A second and significant advantage of providing native implementations of
+such key functions is to enable new developers and scientists to easily
+setup and install a minimal version of \ac{QMCkl} without struggling with
+a large set of dependencies. Thus enabling easy adaptations by new users.
+
+\subsection{Molecular orbitals}
+
+The calculation of molecular orbitals (MOs) is one such key kernel which can
+become a bottleneck unless one uses a highly optimized implementation.
+In this documentation implementation, we have provided an extremely simple
+algorithm which uses \ac{BLAS} Level 3 call (\mintinline{C}{qmckl_dgemm})
+as shown below.
+
+\begin{equation}
+  \phi_i(r) = \sum_{j}C_{i,j}\xi_j(r)
+\end{equation}
+
+Thus enabling HPC experts to easily identify and optimize the calculation
+of Molecular orbitals. Note that in the documentation library, the
+calculation of the MOs uses a native call to the \mintinline{C}{qmckl_dgemm}
+function.
+
+\subsection{Slater Determinant}
+
+Once the molecular orbitals are implemented, the slater matrix needs to be
+calculated along with its inverse. Here again we encounter a standard
+\ac{LAPACK} function \mintinline{C}{qmckl_invert} for which we have also
+provided a small native library. An efficient implementation of the inverse is
+key to avoid an $N^3$ scaling of the algorithm. We have specially provided hand
+coded functions for the calculation of inverse of small matrices ($M\le 5$) in
+order to avoid the overhead of call to external libraries. Efficient methods
+based on the adjoint of a matrix \cite{MCMQC} have been used to avoid the
+unnecessary calculation of the determinant at every Monte-Carlo step.
+
+\subsection{Local energy}
+
+The central quantity in any QMC code is the local energy irrespective of
+the algirithm. Thus, an efficient implementation is desirable. Once again
+the use of \ac{BLAS} based calls, have been used to implenent the calculation
+of the kinetic energy which is the key components. For this purpose, a
+special function \mintinline{C}{qmckl_dgemm_diag} has been used which
+provides the diagonal of a Level 3 matrix product. Thus enabling optimization
+by HPC experts of this key kernel.
+
+\subsection{Drift vector}
+
+The drift vector is also a key step in \ac{QMC} algorithms and
+involves an expensive calculation of the adjoint of the slater matrix.
+The drift vector requires the gradient of the MOs along the three
+spatial directions. This also translates to a call to \mintinline{C}{qmckl_dgemm_diag} function.
+
+
+\subsection{Jastrow factor}
 
 \subsection{Introduction of TREXIO}
 
