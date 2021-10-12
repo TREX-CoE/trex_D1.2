@@ -6,6 +6,7 @@
 \newcommand{\qmcchem}{\textsc{QMC=Chem}}
 \newcommand{\champ}{\textsc{Champ}}
 \newcommand{\turbo}{\textsc{TurboRVB}}
+\newcommand{\QMCkl}{\textsc{\ac{QMCkl}}}
 
 \section{Introduction}
 
@@ -13,18 +14,18 @@ There are three different \ac{QMC} codes in the \ac{TREX} \ac{CoE},
 \qmcchem{}, \turbo{}, and \champ{}, each with its own strengths and
 weaknesses. Instead of optimizing the three codes independently for
 exascale architectures, or re-writing a new monolithic code, our
-strategy is instead to design a new library, \ac{QMCkl}, containing
+strategy is instead to design a new library, \QMCkl{}, containing
 the best of each code. The functions available in this library will
 allow all three codes to benefit from the optimal implementations of
 the major kernels of \ac{QMC}. We hope that this library will be
 adopted by the community beyond the \ac{TREX} \ac{CoE}.
 
-The three main objectives driving the development of \ac{QMCkl} are
+The three main objectives driving the development of \QMCkl{} are
 \emph{performance}, \emph{productivity} and \emph{portability}.
 
 \subsection{Performance}
 
-The ultimate goal of \ac{QMCkl} is to provide a high-performance
+The ultimate goal of \QMCkl{} is to provide a high-performance
 implementation of the main computational kernels involved in \ac{QMC}
 methods, well adapted to exascale machines.
 In this particular \ac{WP}, we focus on the
@@ -38,7 +39,7 @@ For instance, the data structures should be such that the memory
 access patterns are efficient both on CPUs and accelerators, and the
 library should not be too restrictive on how the memory is allocated
 to give enough freedom to the developers of the \ac{HPC} variants to
-allocate memory on the CPU or GPU, pinned or not, etc.
+allocate memory on the CPU or \ac{GPU}, pinned or not, etc.
 
 The main objective of this pedagogical implementation of the library
 is to provide a reference implementation of the kernels such that
@@ -47,22 +48,22 @@ of the functions described in this library, using the same \ac{API}.
 
 \subsection{Portability}
 
-\ac{QMCkl} should take advantage of exascale machines. In terms of hardware,
+\QMCkl{} should take advantage of exascale machines. In terms of hardware,
 many different architectural designs are proposed for exascale
-suercomputers. Some are CPU-based, others are GPU-based, multiple vendors
-propose different CPUs (Intel, AMD, ARM,~\dots) or GPUs (Intel,
+supercomputers. Some are CPU-based, others are \ac{GPU}-based, multiple vendors
+propose different CPUs (Intel, AMD, ARM,~\dots) or \acp{GPU} (Intel,
 NVidia, AMD,~\dots). In this context, we have to propose a library that
 will take advantage of any of these combinations so we can't rely on 
 a vendor-specific software stack like Intel's \ac{MKL} or Nvidia's
 Cuda language. Instead, we
 will rely on free software and standards such as OpenMP, but the BSD
 licence we have adopted also gives the freedom to the community to
-modify \ac{QMCkl} and propose vendor-specific implementations.
+modify \QMCkl{} and propose vendor-specific implementations.
 
 For maximum portability, we have chosen to write the library in the C
-language. In this way, we guarantee that \ac{QMCkl} will be usable in
+language. In this way, we guarantee that \QMCkl{} will be usable in
 \emph{all} the QMC codes used by the \ac{QMC} community, although these
-codes are written in different prgramming languages (C, C++, Python,
+codes are written in different programming languages (C, C++, Python,
 Fortran, etc.).
 
 \subsection{Productivity}
@@ -71,13 +72,13 @@ Fortran, etc.).
 scientists need to be able to understand the code to modify the
 algorithms and propose new methods. It is not realistic to believe
 that any physicist/chemist will be able to read and develop a highly optimized
-C++ code tuned by HPC experts. Similarly, it is not realistic
+C++ code tuned by \ac{HPC} experts. Similarly, it is not realistic
 either to believe that a code written by a random physicist/chemist will
-be be easily ported to GPU by a HPC expert without breaking deeply the
+be be easily ported to \ac{GPU} by a \ac{HPC} expert without breaking deeply the
 structure of the code. If a compromise
 is chosen between these two extremes, it is likely that it will
 converge to a code difficult to maintain by the physicist and
-difficult to optimize by the HPC expert. Therefore our choice was to
+difficult to optimize by the \ac{HPC} expert. Therefore our choice was to
 develop at least two libraries with the same \ac{API}: first a
 \emph{pedagogical} implementation (the objective of the current \ac{WP})
 designed for physicists/chemists, and then multiple high-performance
@@ -87,7 +88,7 @@ implementations of this library.
 
 \subsection{Literate programming}
 
-As the the focus of this library is documentation, we use literate
+As the focus of this library is documentation, we use literate
 programming using {\orgmode} files.\cite{schulte_2012,orgmode}
 Hence, the code and the documentation are produced with the same
 source files, allowing the programmers to write \LaTeX{} formulas and
@@ -97,7 +98,7 @@ This method has proven to be particularly efficient in maintaining the
 documentation consistent with the source code, and literate
 programming is now becoming a very popular technique thanks to the
 development of Jupyter notebooks.
-Here, we have chosen {\orgmode} as it allows the simulatenous usage of
+Here, we have chosen {\orgmode} as it allows the simultaneous usage of
 multiple languages in the same notebook, and also doesn't impose to
 use a web browser for editing.
 
@@ -205,23 +206,23 @@ spatial directions. This also translates to a call to \mintinline{C}{qmckl_dgemm
 
 \subsection{Jastrow factor}
 
-\subsection{Introduction of TREXIO}
+\subsection{Introduction of TREXIO in QMCkl}
 
 The input of a \ac{QMC} calculation is a wave function, which
 contains usually a large number of parameters of different nature:
 nuclear coordinates, atomic basis set parameters, pseudo-potential
 parameters, molecular orbital coefficients, Slater determinant
 expansion, etc.
-Hence, initializing \ac{QMCkl} can quickly become cumbersome.
+Hence, initializing \QMCkl{} can quickly become cumbersome.
 
-TREXIO is the input/output library which is being developed in
+\ac{TREXIO} is the file format and input/output library developed in
 \ac{WP}2. It allows to store all the information relative to a wave
 function in a file, and provides functions to retrieve easily all
 these parameters. 
 
 To simplify the initialization procedure of the library, we have
 introduced the possibility to load in a single function call all the
-wave function parameters contained in a TREXIO file. This simple
+wave function parameters contained in a \ac{TREXIO} file. This simple
 change is extremely beneficial to the user experience.
 
 
@@ -232,413 +233,109 @@ methodological developments. A few examples are presented in this section.
 
 \subsection{Jastrow factor in QMC=Chem}
 
-The strength of \qmcchem{} is large multi-determinant expansion, so very
-little effort was put in the development of the Jatrow factor. Only the
-simplest form of Jastrow factor was available. As show above, the
+The strength of \qmcchem{} is large multi-determinant expansions, so very
+little effort was put in the development of the Jastrow factor. Only the
+simplest form of Jastrow factor was initially available. As shown above, the
 sophisticated form of Jastrow factor developed in \champ{} was introduced
-in \ac{QMCkl}, so this functionality has been made quickly available
-in \qmcchem.
+in \QMCkl{}, so this functionality has been made quickly available
+in \qmcchem{}.
 
 \subsection{Sherman-Morrison-Woodbury kernels in QMC=Chem}
 
 The Sherman-Morrison-Woodbury formula is the most important kernel in
 simulations involving large multi-determinant expansions. Hence, it has
 been carefully optimized in \qmcchem{} in the past. The kernels
-developed in \ac{QMCkl} were introduced in \qmcchem{} in order
+developed in \QMCkl{} were introduced in \qmcchem{} in order
 to compare the performance of the library with \qmcchem{}. The
 comparisons are still ongoing, but is now easy to measure the
-efficiency of the developed kernels since we can now measure their
-performance beyond benchmark situations, under real simulation conditions.
+efficiency of the kernels developed in \QMCkl{} since we can now
+measure their efficiency beyond benchmark situations, under real
+simulation conditions.
 
 \subsection{Exploratory methods using neural networks}
 
-\subsection{Exascale-related algorithms (\ac{WP4})}
+In \ac{WP}4, one project consists in using a neural network as a
+form of Jastrow factor. Many frameworks for machine learning are in
+Python or Java, which can't be easily used inside a Fortran program.
+Moreover, for this particular project we need to evaluate the gradient
+and Laplacian of the Jastrow factor, which requires the ability to
+compute derivatives of the neural network. Computing derivatives is
+particularly easy with the PyTorch package which is for the Python
+programming language. In this project, we will use Python as the main
+language, PyTorch for the neural network and \QMCkl for the
+Slater-determinant component. This project will illustrate the
+versatility of \QMCkl, and the importance of providing a library that
+can be easily used in any programming language.
+
+
+\subsection{Exascale-related algorithms}
+
+Another project of \ac{WP}4 is the development of a novel algorithm
+for \ac{DMC}, enabling an efficient load-balancing by
+making the walkers de-synchronized. In this particular work, it is only
+necessary to have a ``black box'' that computes the local energy and
+the gradient of the wave function, which can be both provided by \QMCkl{}.
+This work will first be realized in the Julia or in the Python
+language, which are very good for quick prototyping, and then once the
+algorithm is validated on a large scale it will be implemented in the
+flagship codes.
+
 
 \subsection{Debugging TREXIO files}
 
-% Computing MO overlap to check validity of basis and MOs in trexio
+We expect the \ac{TREXIO} library to be widely adopted by the community of
+quantum chemistry. but writing files in \ac{TREXIO} format requires the developer
+to be well aware of the conventions used in the code, namely the normalization factors
+of the basis functions, the order in which the Cartesian functions appear, etc.
+It is important to provide a tool with \ac{TREXIO}, that will allow the developer to
+check that the file written is valid. A good check is to very numerically that the
+molecular orbitals are orthonormal. Passing this test implies that the data
+relative to the basis set is consistent with the coefficients of the molecular
+orbitals, so the \ac{TREXIO} file is valid.
 
-\subsection{Future applications}
+\section{Future work}
 
-% - Computation of DFT grids in QP
-% - Computation of AOs in TurboRVB
-% - Jastrow in CHAMP
+\subsection{Development}
+
+We have now reached a milestone where we are able to compute the local energy of an
+arbitrary system described as a single determinant with a Gaussian basis set.
+Reaching this stage enables the development of \ac{HPC} variants of the library in
+\ac{WP}3, and the exploratory benchmarks to monitor the performance of the kernels on
+CPUs and \acp{GPU} as well as the efficiency in the way they are scheduled.
+However, there is still a lot of work to do in this \ac{WP} to make \QMCkl{}
+usable by external developers.
+
+The most important kernels that need to be implemented are:
+\begin{itemize}
+  \item Kernels related to \ac{ECP}
+  \item Multi-determinant wave functions
+  \item Different forms of Jastrow factors
+  \item Atomic basis functions input as values on grid points, to enable the use of
+        arbitrary forms of atomic orbitals
+  \item Cusp-fitting of the molecular orbitals at the nuclear positions
+  \item Kernels related to periodic calculations
+\end{itemize}
+
+\subsection{Applications}
+
+\newcommand{\qp}{\textsc{Quantum Package}}
+
+We plan in the future to finish the integration of \QMCkl{} into the \ac{QMC}
+codes of the \ac{CoE}. The efficient evaluation of the molecular orbitals is
+now a performance bottleneck in \turbo{} that will be solved by using the
+\ac{HPC} implementations of \QMCkl{}. Similarly, the three-body component of
+the Jastrow factor in \champ{} will be accelerated by using \QMCkl{}.
+
+Other applications of the library are possible beyond \ac{QMC}. For instance, 
+the \qp{} code allows to combine \ac{DFT} with wave function
+methods. \ac{DFT} methods require the computation of the one-electron density on 
+a grid since many important integrals can only be approximated numerically. We
+plan to use \QMCkl{} in \qp{} to accelerate the computation of the density grids
+to demonstrate the potential of the library.
 
 
 %% TODO : I am here
 
-\section{Source code}
-
-\subsection{Choice of the programming language}
-
-Most of the codes of the \ac{TREX} \ac{CoE} are written in Fortran
-with some scripts in Bash and Python. Outside of the
-\ac{CoE}, Fortran is also important (Casino, Amolqc). Other
-important languages used by the community are C and {\CC} (QMCPack,
-QWalk). Python is very popular for prototyping, and Julia is gaining
-in popularity\cite{poole_2020}. The library we design should be
-compatible with at least all of these languages. A simple solution is
-to provide a C-compatible \ac{API} since all these languages have a
-\ac{FFI} for calling functions written in C, especially for
-interacting with the operating system.
-
-High-performance versions of the \ac{QMCkl}, with the same \ac{API},
-will be rewritten in \ac{WP}3 by the experts in \ac{HPC}. These
-optimized libraries will be tuned for specific architectures, among
-which we can cite x86 based processors and \ac{GPU} accelerators.
-Nowadays, there exists very efficient and popular software tools to
-take advantage of low-level features of the processor\cite{pohl_2016}
-(vectorization intrinsics) and of \acp{GPU} accelerators (SYCL\cite{SYCL},
-OneAPI, HIP) for {\CC} developers. So it is very likely
-that some optimized implementations will be written in {\CC}, and this
-is agreement with our choice to make the \ac{API} C-compatible.
-
-Fortran is one of the most common languages used by the community, and
-is simple enough to make the algorithms readable both by experts in
-\ac{QMC}, and experts in \ac{HPC}. Hence we propose in this
-pedagogical implementation of \ac{QMCkl} to use Fortran to express the
-QMC algorithms, but we expose them through the \ac{API} as if they
-were written in C using the \mintinline{fortran}{iso_c_binding} \ac{FFI}.
-
-To avoid collisions in the names of the compiled files, the names of
-the Fortran source files end with \mintinline{shell}{_f.f90}, and Fortran
-interface files end with \mintinline{shell}{_fh.f90}.
-The names of the functions defined in Fortran should be the
-same as those exposed in the \ac{API} suffixed by \mintinline{shell}{_f}.
-
-When the library is built, a single static
-(\mintinline{shell}{libqmckl.a}) or shared
-(\mintinline{shell}{libqmckl.so}) library is produced. All the
-function prototypes are given in a single C header file
-\mintinline{shell}{qmckl.h}, and a Fortran interface to the library is
-provided via a module containing only interfaces to the C functions
-(\mintinline{shell}{qmckl_f.f90}).
-
-\subsection{License}
-
-The library is licensed under the open-source 3-clause BSD license to facilitate
-its adoption in all quantum chemistry software, commercial or not.
-
-
-\section{Design of the library}
-
-The proposed \ac{API} should allow the library to deal with memory
-transfers between CPU and accelerators, and to use dynamically
-different levels of floating-point precision.  We chose a
-multi-layered design with low-level and high-level functions (see
-below).
-
-\subsection{Naming conventions}
-
-To avoid namespace collisions, we use \mintinline{C}{qmckl_} as a prefix for
-all exported functions and variables.  All exported header files
-should have a file name prefixed with \mintinline{shell}{qmckl_}.
-
-For instance, if the name of the {\orgmode} file is
-\mintinline{shell}{xxx.org}, the name of the produced C files should
-be \mintinline{shell}{xxx.c} and \mintinline{shell}{xxx.h} and the
-name of the produced Fortran file should be
-\mintinline{shell}{xxx.f90}
-
-Arrays are in uppercase and scalars are in lowercase.
-
-In the  names of  the variables and  functions, only the singular
-form is allowed.
-
-\subsection{Application programming interface}
-
-In the C language, the number of bits used by the basic integer types
-(\mintinline{C}{int}, \mintinline{C}{long int}, \textit{etc}) can
-change from one architecture to the other. To circumvent this
-problem, we choose to use the integer types defined in
-\mintinline{C}{<stdint.h>} where the number of bits used to represent
-integers are fixed.
-
-To ensure that the library will be easily usable in \emph{any} other
-language than C, we restrict the data types in the interfaces to the
-following:
-\begin{itemize}
-\item 32-bit and 64-bit integers, scalars and and arrays
-  (\mintinline{C}{int32_t} and \mintinline{C}{int64_t})
-\item 32-bit and 64-bit floats, scalars and and arrays
-  (\mintinline{C}{float} and \mintinline{C}{double})
-\item Pointers are always casted into 64-bit integers, even on legacy 32-bit architectures
-\item ASCII strings are represented as a pointers to character arrays
-  and terminated by a zero character (C convention).
-\item Complex numbers can be represented by an array of 2 floats.
-\item Boolean variables are stored as integers, \mintinline{C}{1} for
-\mintinline{C}{true} and \mintinline{C}{0} for \mintinline{C}{false}
-\item Floating point variables should be by default
-\mintinline{C}{double}, unless explicitly mentioned
-\item integers used for counting should always be \mintinline{C}{int64_t}
-\end{itemize}
-
-To facilitate the  use in other languages than C, we plan to provide 
-bindings for other languages.
-
-
-\subsubsection{Global state}
-
-Global variables should  be avoided in the library,  because it is
-possible that one  single program needs to  use multiple instances
-of the library, or to use the library in a multi-threaded context.
-To solve this  problem we propose to use a pointer
-to a {\context}  variable,  built   by  the  library   with  the
-\mintinline{C}{qmckl_context_create} function. The
-{\context} contains the global state of the library, and is used as
-the first argument of most \ac{QMCkl} functions. Thread safety is 
-implemented in critical functions of the context with a
-\texttt{pthreads} lock, to provide a simple and general locking
-mechanism.
-
-The internal structure of the {\context}  is not specified, to give a
-maximum of  freedom to  the different  implementations.  Modifying
-the  state   is  done   by  setter   and  getter functions,   prefixed  by
-\mintinline{C}{qmckl_context_set_}  an
-\mintinline{C}{qmckl_context_get_}.
-When a {\context} variable is modified by a setter, a copy of the old
-data structure is made and updated, and the pointer to the new data
-structure is returned, such that the old contexts can still be
-accessed in case they are already involved in running computations by
-other threads. It is also possible to modify the state in an mutable
-fashion, using the \mintinline{C}{qmckl_context_update_} functions,
-although it is not recommended as the default practice.
-The {\context} and its old versions can be destroyed with
-\mintinline{C}{qmckl_context_destroy}.
-
-
-\subsubsection{Low-level functions}
-
-Low-level functions are very simple functions which are leaves of
-the function call tree (they don't call any other \ac{QMCkl} function).
-These  functions   are   \emph{pure} (i.e. without side effects), and
-unaware of the \ac{QMCkl} {\context}. They are not allowed to
-allocate/deallocate memory, and if they need temporary memory it
-should be provided in input. This will prevent a degradation of
-performance due to unnecessary repeated memory allocations and
-deallocations hot spots of the programs.
-
-
-\subsubsection{High-level functions}
-
-High-level functions  are higher in the function  call tree.
-They  are  able  to  choose which  lower-level  function  to  call
-depending on the required precision, and to do the corresponding type
-conversions. They are also able to choose between different algorithms
-(sparse or dense for example), according to parameters defined in the
-{\context}.  These functions are also responsible for allocating
-temporary storage, to optimize the use of accelerators.
-
-The high-level functions should be pure, unless if it is
-justified. If any, all the side effects should be made in the
-\texttt{context} variable.
-
-\subsubsection{Numerical precision}
-
-The number of bits of precision  required for a function should be
-given as an input of low-level computational functions. This input
-will be used to define the values of the different thresholds that
-might be used to avoid computing unnecessary numerical
-noise. High-level functions will use the precision specified in the
-\texttt{context} variable.
-
-
-\section{Codesign}
-\label{sec:codesign}
-
-Research codes are developed over a long period of time by multiple
-researchers, Ph.D students and post-docs. The professional evaluation
-of these people is based on their scientific production and not on the
-quality of the software they write, so code quality and refactoring is
-often left in the low-priority task queue. As a consequence, research
-codes often depend on some choices made at an immature stage of the
-program, and solutions to bypass the wrong choices make the code
-complicated to understand for external programmers, especially if they
-are not familiar with the domain.
-
-\subsection{Kernel extraction}
-
-The strategy we have chosen to extract the kernels of the codes is to
-first discuss among the developers of \ac{QMC} codes to understand how they have
-implemented each particular kernel. Once the developers have agreed on
-which algorithm is best, they first formulate the algorithm in terms
-of mathematical expressions in a {\LaTeX} file, and they create a prototype application 
-(the \emph{mini-application}) implementing \emph{only} the kernel of
-interest. This mini-application can be easily compiled and executed,
-and is considered valid when it reproduces exactly the values obtained
-with the kernel present in the original \ac{QMC} code.
-
-The mini-application is then thoroughly modified together with the
-\ac{HPC} experts involved in \ac{WP}3 until the optimal data
-structures and algorithms are determined. This step is crucial to
-facilitate the access to performance in the \ac{HPC} versions of the
-library that will be developed in \ac{WP}3.  Once the \ac{QMC} and
-\ac{HPC} specialists have agreed on the data structures, the kernel is
-ready to be implemented in the
-library.
-
-
-\subsection{A concrete example}
-
-The first kernel we have been working on is the three-body component of
-the Jastrow factor, which is one of the potential bottlenecks of
-extreme-scale calculations that will run on exascale machines.
-In the CHAMP program, it is expressed as
-
-\newcommand{\Jeen}{J_{\text{een}}}
-\newcommand{\Nel}{N_{\text{elec}}}
-\newcommand{\Nat}{N_{\text{nucl}}}
-\newcommand{\Nord}{N_{\text{nord}}}
-\newcommand{\lmax}{p-k-2\delta_{k,0}}
-\newcommand{\br}{\mathbf{r}}
-\newcommand{\bR}{\mathbf{R}}
-\[
-  \Jeen (\br,\bR) = \sum_{\alpha=1}^{\Nat} \sum_{i=1}^{\Nel} \sum_{j=1}^{i-1}
-\sum_{p=2}^{\Nord} \sum_{k=0}^{p-1}
-\sum_{l=0}^{\lmax} c_{lkp\alpha}
-\left( {r}_{ij} \right)^k
-\left[ \left( {R}_{i\alpha} \right)^l + \left( {R}_{j\alpha} \right)^l \right]
-\left( {R}_{i\,\alpha} \, {R}_{j\alpha} \right)^{(p-k-l)/2} 
-\]
-where
-$\Nel$ is the number of electrons, 
-$\Nat$ is the number of nuclei,
-$\Nord$ is the maximum order of the polynomial, 
-$\br$ contains rescaled electron-electron distances, 
-$\bR$ contains rescaled electron-nucleus distances,
-and $c_{lkp\alpha}$ are the variational parameters which are non-zero
-only when $p-k-l$ is even.
-
-For \ac{QMC} simulations, the first and second derivatives of $\Jeen$ with
-respect to the electron coordinates are also required. To optimize the
-parameters, the derivative with respect to $c_{lkp\alpha}$
-should also be available, and in the context of molecular dynamics or
-geometry optimization the first derivatives with respect to $\bR$ are
-also required. To compute these derivatives, multiple intermediates
-will be common and we need to identify them such that the same
-intermediates can be reused for several derivatives.
-
-We have written a mini-application to implement the three-body component
-of the Jastrow factor, as well as the first and second derivative with
-respect to electron coordinates. This mini-application, available on
-GitHub\footnote{\url{https://github.com/trex-coe/irpjast}} has allowed us to
-rewrite the expressions in a way allowing us to take advantage of BLAS3
-matrix multiplications. The formula is now expressed in terms of
-rank-3 and rank-4 tensors
-\newcommand{\tr}{\, \bar{\mathtt{r}}}
-\newcommand{\tR}{\, \bar{\mathtt{R}}}
-\newcommand{\tP}{\, \bar{\mathtt{P}}}
-\[
-  \Jeen(\br,\bR) = 
-  \sum_{p=2}^{\Nord}\sum_{k=0}^{p-1}
-  \sum_{l=0}^{\lmax} 
-    \sum_{\alpha=1}^{\Nat}
-    c_{lkp\alpha}
-    \sum_{i=1}^{\Nel}
-    {\tR}_{i,\alpha,(p-k-l)/2}\,
-  {\tP}_{i,\alpha,k,(p-k+l)/2}
-  \]
-with 
-  \[
-  {\tP}_{i, \alpha, k, l} = \sum_{j=1}^{\Nel} {\tr}_{i,j,k}\,{\tR}_{j,\alpha,l}.
-  \]
-  
-Similarly, the gradient with respect to electron coordinates and the
-Laplacian require an additional intermediate array and reuses ${\tP}$. As
-the gradient ($\nabla_{i}$) and the Laplacian ($\Delta_i$) have a
-large part of their expression in common, the $3\Nel$ components of
-the gradient and the $\Nel$ components of the Laplacian are stored in
-the same array, adding an extra index $m=(1,2,3)$ for $\nabla_x,
-\nabla_y,\nabla_z$
-and $m=4$ for $\Delta$.
-
-\newcommand{\tg}{\, \bar{\mathtt{g}}}
-\newcommand{\tG}{\, \bar{\mathtt{G}}}
-\newcommand{\tQ}{\, \bar{\mathtt{Q}}}
-
-\begin{eqnarray*}
-  \nabla_{im} \Jeen(\br,\bR) & = &
-  \sum_{p=2}^{\Nord}\sum_{k=0}^{p-1}
-  \sum_{l=0}^{\lmax} 
-    \sum_{\alpha=1}^{\Nat}
-    c_{lkp\alpha}
-    \sum_{i=1}^{\Nel} 
-     {\tG}_{i,m,\alpha,(p-k-l)/2} {\tP}_{i,\alpha,k,(p-k+l)/2} +  \\
-&&   {\tG}_{i,m,\alpha,(p-k+l)/2} {\tP}_{i,\alpha,k,(p-k-l)/2} + 
-     {\tR}_{i,\alpha,(p-k-l)/2} {\tQ}_{i,m,\alpha,k,(p-k+l)/2} + \\
-&&   {\tR}_{i,\alpha,(p-k+l)/2} {\tQ}_{i,m,\alpha,k,(p-k-l)/2} + 
-    \delta_{m,4} \big( \\
-&&     {\tG}_{i,1,\alpha,(p-k+l)/2} {\tQ}_{i,1,\alpha,k,(p-k-l)/2} +
-       {\tG}_{i,2,\alpha,(p-k+l)/2} {\tQ}_{i,2,\alpha,k,(p-k-l)/2} + \\
-&&     {\tG}_{i,3,\alpha,(p-k+l)/2} {\tQ}_{i,3,\alpha,k,(p-k-l)/2} +
-       {\tG}_{i,1,\alpha,(p-k-l)/2} {\tQ}_{i,1,\alpha,k,(p-k+l)/2} + \\
-&&     {\tG}_{i,2,\alpha,(p-k-l)/2} {\tQ}_{i,2,\alpha,k,(p-k+l)/2} + 
-       {\tG}_{i,3,\alpha,(p-k-l)/2} {\tQ}_{i,3,\alpha,k,(p-k+l)/2} \big)
-\end{eqnarray*}
-with 
-\[
-  {\tG}_{i, m, \alpha, l}  =  \frac{\partial \left( {R}_{i\alpha} \right)^l}
-                             {\partial r_i},  \phantom{ space }
-  {\tg}_{i, m, j, k}  =  \frac{\partial \left( {r}_{ij} \right)^k}
-                             {\partial r_i}, \phantom{ space }
-                             \text{ and } 
-  {\tQ}_{i, m, \alpha, k, l}  =  \sum_{j=1}^{\Nel}
-                            {\tg}_{i,m,j,k}\,{\tR}_{j,\alpha,l} 
-\]
-  
-\begin{figure}[t]
-  \begin{center}
-  \includegraphics[width=0.75\textwidth]{speedup.pdf}
-  \end{center}
-  \caption{\label{fig:speedup}Speedup obtained after the re-expression of the three-body
-    Jastrow factor.}
-\end{figure}
-
-This rewriting allowed us to move the computationally intensive part in
-$\mathcal{O}(\Nat{\Nel}^2)$, i.e. the construction of the intermediate
-tensors, into a BLAS3 matrix multiplication, the remaining part being
-in $\mathcal{O}(\Nat \Nel)$.
-
-The performance of the computation of the value, gradient and Laplacian of
-the three-body Jastrow factor was measured on an Intel(R) Xeon(R) Gold
-6130 processor, and the code was compiled with the Intel Fortran
-compiler version 2021.1 with options
-\mintinline{bash}{-O3 -xCORE-AVX512 -g -mkl=sequential -qopt-zmm-usage=high}.
-The speedup with respect to the unoptimized kernel is presented in
-figure~\ref{fig:speedup}, and reaches a factor of $19\times$ for the
-largest system sizes. Performance analyzis of the mini-application
-showed that at this stage we have reached 80\% of the single core peak
-performance of the CPU core for this kernel. Profiling with MAQAO
-confirmed the high quality of the code produced by our mini-application:
-high array access efficiency, high arithmetic intensity, efficient
-vectorization, and a large part of the time spent in the BLAS matrix
-multiplication routines.
-
-The same strategy of kernel extraction of the codes and rewriting
-will be applied to all other possible computational bottlenecks of QMC
-simulations, and then the kernels will be ready to be implemented in
-the library.
-
-
-
-
-\appendix
-\section{Appendix: Documentation of the API}
-
-In this section, we include as an example part of the documentation of
-the library which is automatically generated from the {\orgmode}
-files, in the current status. The rest of the documentation can be
-found on the web site of the library\footnote{\url{https://trex-coe.github.io/qmckl}}.
-Please, keep in mind that the library is still at an early development
-stage. In the first six months, most of the efforts focused on
-preparing solid bases for the development of
-the library, more related to system programming than scientific
-programming (the context variable, memory allocation, conventions,
-Makefiles, generation of the documentation, \textit{etc}). The actual
-implementation of the kernels is just starting.
-
-
 \clearpage
 
-% TODO : include here documentation
 
