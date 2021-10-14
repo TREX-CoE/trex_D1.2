@@ -209,6 +209,8 @@ The drift vector is also a key step in \ac{QMC} algorithms and
 involves an expensive calculation of the adjoint of the slater matrix.
 The drift vector requires the gradient of the MOs along the three
 spatial directions. This also translates to a call to \mintinline{C}{qmckl_dgemm_diag} function.
+Thus optimizing the calculation of all the kernels by using \ac{BLAS} 
+like library calls.
 
 \subsection{Introduction of TREXIO in QMCkl}
 
