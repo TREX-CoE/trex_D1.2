@@ -188,6 +188,10 @@ coded functions for the calculation of inverse of small matrices ($M\le 5$) in
 order to avoid the overhead of call to external libraries. Efficient methods
 based on the adjoint of a matrix \cite{MCMQC} have been used to avoid the
 unnecessary calculation of the determinant at every Monte-Carlo step.
+Here, we shall also show interaction with another kernel which implements
+efficient algorithm for updating the inverse of a matrix (Sherman-Morrison updates)
+without recalculating the inverse. However, the calculation of the
+exact inverse is also available if required.
 
 \subsection{Local energy}
 
