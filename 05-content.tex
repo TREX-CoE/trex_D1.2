@@ -170,9 +170,12 @@ as shown below.
 \end{equation}
 
 Thus enabling HPC experts to easily identify and optimize the calculation
-of Molecular orbitals. Note that in the documentation library, the
+of MOs. Note that in the documentation library, the
 calculation of the MOs uses a native call to the \mintinline{C}{qmckl_dgemm}
-function.
+function. It will also help the HPC experts to identify possible
+use of sparse data structures by realizing that the Atomic orbitals (AOs)
+are usually very sparse. Thus enabling a gain in performance from $\mathcal{O}(n^3)$
+to $\mathcal{O}(n)$ in copmexity of the computation.
 
 \subsection{Slater Determinant}
 
