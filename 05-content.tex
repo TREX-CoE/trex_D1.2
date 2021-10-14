@@ -135,16 +135,16 @@ available on the GitHub repository at \url{https://github.com/trex-coe/qmckl}.
 
 One of the main development guidelines is to maximize the use
 of \ac{BLAS} like operations in the main kernels. The main \ac{BLAS} operations are
-as follows:
+categorized into three types in order of increasing efficiency:
 
 \begin{itemize}
-\item Level 1 - Operations (e.g. scalar product) on two vectors.
-\item Level 2 - Operations involving Matrix and vector (e.g. Matrix vector product).
-\item Level 3 - Operations involving two matrices (Matrix times Matrix).
+\item Level 1 - Operations for e.g. scalar product on two vectors.
+\item Level 2 - Operations involving a Matrix and a vector (e.g. Matrix vector product).
+\item Level 3 - Operations involving two matrices (e.g. Matrix times Matrix).
 \end{itemize}
 
 Incorporating these basic operations in developing the main algorithms is key to
-acheive an optimal implementation of the library. However, these key BLAS
+acheive an optimal implementation of the kernels. However, these key BLAS
 functions depend on the type of hardware (i.e. CPU, GPU, or FPGA) and require a
 tailored approach. Therefore, in \ac{QMCkl}, we have chosen to abstract the
 calls to such libraries with standard \ac{QMCkl} functions such as
