@@ -11,15 +11,15 @@
 \section{Introduction}
 
 There are three different \ac{QMC} codes in the \ac{TREX} \ac{CoE},
-\qmcchem{}, \turbo{}, and \champ{}, each with its own strengths and
+\turbo{}, \champ{}, and \qmcchem{}, each with its own strengths and
 weaknesses. Instead of optimizing the three codes independently for
 exascale architectures, or re-writing a new monolithic code, our
 strategy is instead to design a new library, \QMCkl{}, containing
 the best of each code. The functions available in this library will
-allow all three codes to benefit from the optimal implementations of
-the major kernels of \ac{QMC}. We hope that this library will be
-adopted by the community beyond the \ac{TREX} \ac{CoE}.
-
+allow all three codes to benefit from the optimal implementation of
+the major kernels of \ac{QMC}.
+%We believe that this library will be
+%adopted by the community beyond the \ac{TREX} \ac{CoE}.
 The three main objectives driving the development of \QMCkl{} are
 \emph{performance}, \emph{productivity} and \emph{portability}.
 
@@ -43,8 +43,9 @@ allocate memory on the CPU or \ac{GPU}, pinned or not, etc.
 
 The main objective of this pedagogical implementation of the library
 is to provide a reference implementation of the kernels such that
-\ac{HPC} experts will be able to use it to rewrite optimized versions
-of the functions described in this library, using the same \ac{API}.
+\ac{HPC} experts involved in \ac{WP}3 will be able to use it to rewrite
+optimized versions of the functions described in this library, using the same
+\ac{API}.
 
 \subsection{Portability}
 
@@ -56,15 +57,14 @@ NVidia, AMD,~\dots). In this context, we have to propose a library that
 will take advantage of any of these combinations so we can't rely on 
 a vendor-specific software stack like Intel's \ac{MKL} or Nvidia's
 Cuda language. Instead, we
-will rely on free software and standards such as OpenMP, but the BSD
+will rely on free software and open standards such as OpenMP, but the BSD
 licence we have adopted also gives the freedom to the community to
-modify \QMCkl{} and propose vendor-specific implementations.
+modify \QMCkl{} and propose vendor-specific implementations of \QMCkl{}.
 
-For maximum portability, we have chosen to write the library in the C
-language. In this way, we guarantee that \QMCkl{} will be usable in
-\emph{all} the QMC codes used by the \ac{QMC} community, although these
-codes are written in different programming languages (C, C++, Python,
-Fortran, etc.).
+For maximum portability, we have chosen to propose an \ac{API} compatible with
+the C language. In this way, we guarantee that \QMCkl{} will be usable in
+\emph{all} the QMC codes used by the \ac{QMC} community, although these codes
+are written in different programming languages (C, C++, Python, Fortran, etc.).
 
 \subsection{Productivity}
 
@@ -74,11 +74,11 @@ algorithms and propose new methods. It is not realistic to believe
 that any physicist/chemist will be able to read and develop a highly optimized
 C++ code tuned by \ac{HPC} experts. Similarly, it is not realistic
 either to believe that a code written by a random physicist/chemist will
-be be easily ported to \ac{GPU} by a \ac{HPC} expert without breaking deeply the
-structure of the code. If a compromise
+be be easily ported to \ac{GPU} by a \ac{HPC} expert without requiring a deep 
+restructuring of the code. If a compromise
 is chosen between these two extremes, it is likely that it will
 converge to a code difficult to maintain by the physicist and
-difficult to optimize by the \ac{HPC} expert. Therefore our choice was to
+difficult to optimize by the \ac{HPC} expert. Therefore our choice is to
 develop at least two libraries with the same \ac{API}: first a
 \emph{pedagogical} implementation (the objective of the current \ac{WP})
 designed for physicists/chemists, and then multiple high-performance
@@ -89,8 +89,8 @@ implementations of this library.
 
 \subsection{Literate programming}
 
-As the focus of this library is documentation, we use literate
-programming using {\orgmode} files.\cite{schulte_2012,orgmode}
+As the focus of this pedagogical implementation of \QMCkl{} is documentation,
+we use literate programming using {\orgmode} files.\cite{schulte_2012,orgmode}
 Hence, the code and the documentation are produced with the same
 source files, allowing the programmers to write \LaTeX{} formulas and
 use tables or figures together with the corresponding code in the same
@@ -114,8 +114,8 @@ developments which are not directly visible from outside of the project.
 Having spent a large effort of preparation pays a lot in the long term
 since is can dramatically enhance the productivity of the contributors
 of the library.
-Now that this effort has been done, we are in a position where we can
-are highly productive in implementing new kernels.
+Now that this effort has been done, we are in a position where we are highly
+productive in implementing new kernels.
 
 \subsection{Control of Numerical accuracy}
 
@@ -125,7 +125,7 @@ process of the library.
 With this aim in mind, the \ac{UVSQ} team has proposed an internship
 to a master's student, Aurélien Delval, to build a continuous
 integration system which, instead of monitoring if tests pass or fail,
-monitors the numerical accuracy of the implemented kernels of \QMCkl{}.
+keeps track of the numerical accuracy of the implemented kernels of \QMCkl{}.
 
 This tools relies on Verificarlo,\cite{verificarlo} a software
 developed by TREX members that implements Monte Carlo arithmetics at
@@ -145,7 +145,6 @@ pushed on the server.
 A nice graphical interface is proposed to compare the accuracy
 obtained with different versions, or to display the fluctuation of
 the results obtained by different kernels (Fig.~\ref{fig:vfci}).
-
 A tutorial about how to use Verificarlo-CI is presented in appendix.
 
 \subsection{Introduction of TREXIO in QMCkl}
@@ -154,8 +153,9 @@ The input of a \ac{QMC} calculation is a wave function, which
 contains usually a large number of parameters of different nature:
 nuclear coordinates, atomic basis set parameters, pseudo-potential
 parameters, molecular orbital coefficients, Slater determinant
-expansion, etc.
-Hence, initializing \QMCkl{} can quickly become cumbersome.
+expansion coefficients, etc.
+Hence, initializing \QMCkl{} can quickly become cumbersome to the users
+of the library.
 
 \ac{TREXIO} is the file format and input/output library developed in
 \ac{WP}2. It allows to store all the information relative to a wave
@@ -163,7 +163,7 @@ function in a file, and provides functions to retrieve easily all
 these parameters. 
 
 To simplify the initialization procedure of the library, we have
-introduced the possibility to load in a single function call all the
+introduced the possibility to load, with a single function call, all the
 wave function parameters contained in a \ac{TREXIO} file. This simple
 change is extremely beneficial to the user experience.
 
@@ -179,14 +179,14 @@ was to provide a library that is capable of computing the local energy
 (the central quantity in \ac{QMC}) for any arbitrary system described
 by a Slater determinant using a Gaussian atomic basis set:
 \newcommand{\eloc}{E_{\text{loc}}}
-\newcommand{\rr}{\mathbf{r_1^\uparrow,\dots,r_N^\uparrow, r_{M+1}^\downarrow,\dots,r_N^\downarrow}}
+\newcommand{\rr}{\mathbf{r_1^\uparrow,\dots,r_M^\uparrow, r_{M+1}^\downarrow,\dots,r_N^\downarrow}}
 \[
 \eloc\left(\rr\right) = \frac{\hat{T}{\Psi\left(\rr\right)}}{\Psi\left(\rr\right)}
 + V\left(\rr\right)
 \]
 with
 \[
-\Psi\left(\mathbf{r_1^\uparrow,\dots,r_N^\uparrow, r_{M+1}^\downarrow,\dots,r_N^\downarrow}\right) = 
+\Psi\left(\mathbf{r_1^\uparrow,\dots,r_M^\uparrow, r_{M+1}^\downarrow,\dots,r_N^\downarrow}\right) = 
 \left|
 \begin{array}{ccc}
 \phi_1\left(\mathbf{r}_1^\uparrow\right) & \cdots & \phi_1\left(\mathbf{r}_M^\uparrow\right) \\
@@ -228,18 +228,19 @@ as follows:
 \end{itemize}
 
 Incorporating these basic operations in developing the main algorithms is key to
-achieve an optimal implementation of the library. However, these key \ac{BLAS}
+achieve an optimal implementation of the library. However, the efficiency of these key \ac{BLAS}
 functions depend on the type of hardware (i.e. CPU, or accelerator) and require a
 tailored approach. Therefore, in \QMCkl{}, we have chosen to abstract the
 calls to such libraries with standard \QMCkl{} functions such as
-\mintinline{C}{qmckl_dgemm} and \mintinline{C}{qmckl_invert}. This has a
-two-fold advantage of standardizing the \ac{API} and enabling hardware specific
-optimizations by \ac{HPC} experts without breaking user-space.
+\mintinline{C}{qmckl_dgemm} and \mintinline{C}{qmckl_invert} for matrix
+multiplication and inversion. This has a two-fold advantage of standardizing
+the \ac{API} and enabling hardware specific optimizations by \ac{HPC} experts
+without breaking user-space.
 
 A second and significant advantage of providing native implementations of
 such key functions is to enable new developers and scientists to easily
 setup and install a minimal version of \QMCkl{} without struggling with
-a large set of dependencies, thus enabling easy adaptations by new users.
+a large set of dependencies, thus enabling easy access to new users.
 
 \subsection{Atomic basis functions}
 
@@ -256,7 +257,7 @@ Gaussian ($p=2$):
 
 In the case of Gaussian functions, $n_s$ is always zero.  The
 normalization factor $\mathcal{N}_s$ ensures that all the functions of
-the shell are normalized (integrate) to unity. Usually, basis sets are
+the shell are normalized (integrate to unity). Usually, basis sets are
 given a combination of normalized primitives, so the normalization
 coefficients of the primitives, $f_{ks}$, need also to be provided.
 
@@ -290,15 +291,15 @@ library, the calculation of the \acp{MO} uses a native call to the
 
 \subsection{Slater Determinants}
 
-Once the molecular orbitals are implemented, the Slater matrix $S_{ij} = \phi_i(r_j)$,
-where $r_j$ represents the Cartesian coordinates of the $j$-th electron, needs to be
+Once the molecular orbitals are implemented, the Slater matrix $S_{ij} = \phi_i(\mathbf{r}_j)$,
+where $\mathbf{r}_j$ represents the Cartesian coordinates of the $j$-th electron, needs to be
 calculated along with its inverse $S^{-1}$.
   
-Here again we encounter a standard \ac{LAPACK} function
+Here again we encounter a general  function
 \mintinline{C}{qmckl_invert} for which we have also provided a small native
-library. An efficient implementation of the inverse is key to avoid an cubic
-scaling of the algorithm. We have specially provided hand coded functions for
-the calculation of inverse of small matrices ($M\le 5$) for which the
+library. An efficient implementation of the inverse is key since the 
+scaling of the algorithm is cubic. We have specially provided hand-coded functions for
+the calculation of the inverse of small matrices ($M\le 5$) for which the
 $\mathcal{O}(N!)$ algorithm is faster than calling external library functions.
 Efficient methods based on the adjoint of a matrix \cite{MCMQC} are used to
 compute the gradient of the Slater matrix, which is necessary for the 
@@ -335,7 +336,7 @@ with standard techniques like LU-decomposition.
 
 This algorithm is the main bottleneck of multi-determinant
 calculations, so it is crucial to have the most efficient
-implementation. In addition, this algorithm is know to be responsible
+implementation. In addition, this algorithm is known to be responsible
 for propagating numerical errors, so a careful study of the
 performance and of the accuracy of multiple kernels was realized,
 thanks to Verificarlo-CI. The involved algorithms are:
@@ -363,14 +364,14 @@ little effort was put in the development of the Jastrow factor. Only the
 simplest form of Jastrow factor was initially available. As shown above, the
 sophisticated form of Jastrow factor developed in \champ{} was introduced
 in \QMCkl{}, so this functionality has been made quickly available
-in \qmcchem{}.
+in \qmcchem{} by calling the \QMCkl{} appropriate functions.
 
 \subsection{Sherman-Morrison-Woodbury kernels in QMC=Chem}
 
 The Sherman-Morrison-Woodbury formula is the most important kernel in
 simulations involving large multi-determinant expansions. Hence, it has
 been carefully optimized in \qmcchem{} in the past. The kernels
-developed in \QMCkl{} were introduced in \qmcchem{} in order
+developed in \QMCkl{} can now be called in \qmcchem{} in order
 to compare the performance of the library with \qmcchem{}. The
 comparisons are still ongoing, but is now easy to measure the
 efficiency of the kernels developed in \QMCkl{} since we can now
@@ -387,9 +388,9 @@ and Laplacian of the Jastrow factor, which requires the ability to
 compute derivatives of the neural network. Computing derivatives is
 particularly easy with the PyTorch package which is for the Python
 programming language. In this project, we will use Python as the main
-language, PyTorch for the neural network and \QMCkl for the
+language, PyTorch for the neural network and \QMCkl{} for the
 Slater-determinant component. This project will illustrate the
-versatility of \QMCkl, and the importance of providing a library that
+versatility of \QMCkl{}, and the importance of providing a library that
 can be easily used in any programming language.
 
 
@@ -401,22 +402,24 @@ making the walkers de-synchronized. In this particular work, it is only
 necessary to have a ``black box'' that computes the local energy and
 the gradient of the wave function, which can be both provided by \QMCkl{}.
 This work will first be realized in the Julia or in the Python
-language, which are very good for quick prototyping, and then once the
-algorithm is validated on a large scale it will be implemented in the
+language, which are very good for quick prototyping. Then, once the
+algorithm is validated on a large scale, it will be implemented in the
 flagship codes.
 
 
 \subsection{Debugging TREXIO files}
 
 We expect the \ac{TREXIO} library to be widely adopted by the community of
-quantum chemistry. but writing files in \ac{TREXIO} format requires the developer
+quantum chemistry. But writing files in \ac{TREXIO} format requires the developer
 to be well aware of the conventions used in the code, namely the normalization factors
 of the basis functions, the order in which the Cartesian functions appear, etc.
 It is important to provide a tool with \ac{TREXIO}, that will allow the developer to
 check that the file written is valid. A good check is to very numerically that the
 molecular orbitals are orthonormal. Passing this test implies that the data
 relative to the basis set is consistent with the coefficients of the molecular
-orbitals, so the \ac{TREXIO} file is valid.
+orbitals, so the \ac{TREXIO} file is valid. We have developed such a tool 
+writing a simple program which calls \QMCkl{} to evaluate the molecular orbitals
+at grid points.
 
 \section{Future work}
 
@@ -430,9 +433,9 @@ CPUs and \acp{GPU} as well as the efficiency in the way they are scheduled.
 However, there is still a lot of work to do in this \ac{WP} to make \QMCkl{}
 usable by external developers.
 
-The most important kernels that need to be implemented are:
+The most important kernels that still need to be implemented are:
 \begin{itemize}
-  \item Kernels related to \ac{ECP}
+  \item Kernels related to \acp{ECP}
   \item Multi-determinant wave functions
   \item Different forms of Jastrow factors
   \item Atomic basis functions input as values on grid points, to enable the use of
@@ -456,10 +459,8 @@ the \qp{} code allows to combine \ac{DFT} with wave function
 methods. \ac{DFT} methods require the computation of the one-electron density on 
 a grid since many important integrals can only be approximated numerically. We
 plan to use \QMCkl{} in \qp{} to accelerate the computation of the density grids
-to demonstrate the potential of the library.
+to demonstrate the potential of the library beyond \ac{QMC} simulations.
 
-
-%% TODO : I am here
 
 \clearpage
 

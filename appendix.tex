@@ -1,9 +1,11 @@
 \newpage
 \appendix
 \section{Verificarlo-CI tutorial}
-\textit{This tutorial is available as a dedicated repository
-\cite{vfc_ci_tutorial} on which users can set up a CI workflow on a
-simple code and is transcribed here. Here is the provided C code: }
+This tutorial for the CI functionality of Verificarlo is available as a
+dedicated
+repository\footnote{\url{https://github.com/verificarlo/vfc_ci_tutorial}}.
+It describes how to setup the CI pipeline and generate the report on a simple
+example.  Users can set up a CI workflow on the simple code transcribed here.
 
 \begin{minted}{C}
 #include <stdio.h>
@@ -35,10 +37,6 @@ int main(void) {
 }
 \end{minted}
 
-This is a tutorial repository for the CI functionality of Verificarlo. It describes how to setup the CI pipeline and generate the report on a simple example.
-
-\bigbreak
-
 The goal of this example is to compute a basic dot product on two vectors
 generated with a fixed with random seed. The computation is done with a naive
 method, and the function that does it can be found at the beginning of \texttt{main.c}.
@@ -46,25 +44,18 @@ The goal will be to use Verificarlo CI to measure the numerical accuracy of the
 naive implementation, before adding a better version of the algorithm and
 validating it by comparing the results of the two versions.
 
-\bigbreak
-
 Following this tutorial will require you to have a functional install of
 Verificarlo on your machine, or to use it through its Docker image. For more
 information on the tool itself, please refer to the Verificarlo CI
 documentation. It is advised that you at least go through it quickly before
 doing this tutorial.
 
-In order to follow this tutorial, which makes use of GitHub Actions, you will
-need to have your own fork of this repository. Once it is created,
-\mintinline{bash}{git clone} it :
-
 \subsection{Fork and clone the repository}
 
 In order to follow this tutorial, which makes use of GitHub Actions, you will
-need to have your own fork of this repository. Once it is created, git clone it
-:
+need to have your own fork of this repository. Once it is created,
+\mintinline{bash}{git clone} it:
 
-\bigbreak
 
 \begin{minted}{bash}
 $ git clone https://github.com/[YourUserName]/verificarlo_ci_tutorial
@@ -73,9 +64,7 @@ $ cd verificarlo_ci_tutorial
 
 \subsection{Try to build and execute the code}
 
-Here is the output that you should get after issuing the following commands :
-
-\bigbreak
+Here is the output that you should get after issuing the following commands:
 
 \begin{minted}{text}
 $ make
@@ -87,16 +76,14 @@ Naive dotprod = 1040.9039307
 
 \mintinline{C}{vfc_probes} is the system used by Verificarlo CI to export test variables from a program to the tool itself. First of all, you'll need to modify the Makefile to link the \mintinline{C}{vfc_probes} library. Line 4 should become:
 
-\bigbreak
-
 \begin{minted}{make}
 all:
 	$(CC) main.c -lvfc_probes -o dotprod
 \end{minted}
 
-Moreover, you must also include the \mintinline{C}{vfc_probes.h} header at the beginning of \mintinline{C}{main.c}. You could add the following include statement after line 3:
-
-\bigbreak
+Moreover, you must also include the \mintinline{C}{vfc_probes.h} header at the
+beginning of \mintinline{C}{main.c}. You should add the following include
+statement after line 3:
 
 \begin{minted}{C}
 #include <vfc_probes.h>
@@ -104,16 +91,12 @@ Moreover, you must also include the \mintinline{C}{vfc_probes.h} header at the b
 
 Now that \mintinline{C}{vfc_probes} is correctly linked, we can create out probes structure. This should be done at the beginning at the main function, for instance after the new line 20 (if you added the previous line):
 
-\bigbreak
-
 \begin{minted}{C}
 int main(void) {
   vfc_probes probes = vfc_init_probes();
 \end{minted}
 
-Then we will add the probe containing the result of the dotprod. You can do this after the new line 32:
-
-\bigbreak
+Then we will add the probe containing the result of the \texttt{dotprod}. You can do this after the new line 32:
 
 \begin{minted}{C}
   float naiveRes = naiveDotprod(x, y, n);
@@ -121,8 +104,6 @@ Then we will add the probe containing the result of the dotprod. You can do this
 \end{minted}
 
 Finally, we can dump the probes at the end of the main function, just before the return statement:
-
-\bigbreak
 
 \begin{minted}{C}
   vfc_dump_probes(&probes);
@@ -133,8 +114,6 @@ Finally, we can dump the probes at the end of the main function, just before the
 \subsection{Set up \texttt{vfc\_ci} and GitHub Actions}
 
 Before setting up GitHub Actions, we need to make sure that the \mintinline{bash}{vfc_ci} test command can run. To do this, create \mintinline{bash}{vfc_tests_config.json}, the test configuration file, at the root of the repository and with the following content:
-
-\bigbreak
 
 \begin{minted}{Python}
 {
@@ -159,8 +138,6 @@ Before setting up GitHub Actions, we need to make sure that the \mintinline{bash
 
 Each test run will consist of 40 executions of the dotprod executable, split over two backends. This will export one test probe containing the result of the naive dotprod. To make sure that everything works correctly, it is possible to call \mintinline{bash}{vfc_ci} test with the dry run flag, so that no output file will be produced:
 
-\bigbreak
-
 \begin{minted}{bash}
 $ vfc_ci test -d
 [...]
@@ -170,11 +147,7 @@ Info [vfc_ci]: The dry run flag was enabled, so no files were actually created.
 
 If you get the following output, your Verificarlo CI setup should be correct.
 
-\bigbreak
-
 Before setting up the CI workflow, we need to make sure that our local repository doesn't contain any unstaged changes. Commit and push the changes that you have just made:
-
-\bigbreak
 
 \begin{minted}{bash}
 $ git add .
@@ -183,8 +156,6 @@ $ git push --set-upstream origin master
 \end{minted}
 
 You are finally ready to create the CI workflow. This can be done automatically with the following command:
-
-\bigbreak
 
 \begin{minted}{bash}
 $ vfc_ci setup github
@@ -203,8 +174,6 @@ commit, which will result in a test file being committed to the CI branch.
 
 Once the test file has been committed to the CI branch, you can checkout to it and access the results:
 
-\bigbreak
-
 \begin{minted}{bash}
 $ git checkout vfc_ci master
 $ git pull origin vfc_ci_master
@@ -212,35 +181,34 @@ $ cd vfcruns
 $ vfc_ci test -s
 \end{minted}
 
-... will open the report in your browser.
+\dots will open the report in your browser.
 
 There's not much to see for now, since there's only one test variable and one
 run in the report. However, if the naive algorithm could seem sufficient at
 first glance, it does have one issue. The values of \mintinline{C}{x[i] * y[i]}
-are all added to the same res variable, which will suffer from increasingly
+are all added to the same \mintinline{C}{res} variable, which will suffer from increasingly
 important round off errors. Thus, when a cancellation occurs, it will become
-catastrophic and yield an inaccurate result. It has been showed that this error
+catastrophic and yield an inaccurate result. It has been shown that this error
 grows in $O(n)$.
 
 
 \subsection{Adding an improved method}
 
 This subsection introduces another method for the computation of a dot product.
-The idea is to recursively split the x and y arrays in half as to obtain a
-binary tree, and to compute the \mintinline{C}{x[i] * y[i]} when the arrays are
-of size 1 (which is the base case). The final result is computed by adding for
-each node the dot prods of its two children, until the root is reached. This
-method is called pairwise summation and is illustrated in the figure below:
-
-\bigbreak
+The idea is to recursively split the \mintinline{C}{x} and \mintinline{C}{y}
+arrays in half as to obtain a binary tree, and to compute 
+\mintinline{C}{x[i] * y[i]} when the arrays are of size 1 (which is the base
+case). The final result is computed by adding for each node the dot products of
+its two children, until the root is reached. This method is called pairwise
+summation and is illustrated in the figure below.
 
 \begin{center}
-\includegraphics[width=0.8\textwidth]{images/recursive_dotprod.png}
+\includegraphics[width=0.7\textwidth]{images/recursive_dotprod.png}
 \end{center}
 
-Since the results of each layer are added together instead of being accumulated into one term, error will increase after each layer of the tree, instead of after each operation, thus growing in $O(log n)$ as shown in \cite{higham}.
-
-\bigbreak
+Since the results of each layer are added together instead of being accumulated
+into one term, error will increase after each layer of the tree, instead of
+after each operation, thus growing in $O(\log n)$ as shown in \cite{higham}.
 
 Here is the implementation of the algorithm that you can add before the main function:
 
@@ -267,16 +235,12 @@ float recursiveDotprod(float * x, float * y, size_t n) {
 
 Call the function in \mintinline{bash}{main.c} and add a new probe:
 
-\bigbreak
-
 \begin{minted}{C}
      float recursiveRes = recursiveDotprod(x, y, n);
      vfc_probe(&probes, "dotprod_test", "recursive", recursiveRes);
 \end{minted}
 
-... and optionally a \mintinline{C}{printf} statement:
-
-\bigbreak
+\dots and optionally a \mintinline{C}{printf} statement:
 
 \begin{minted}{C}
   printf("Naive dotprod = %.7f \n", naiveRes);
@@ -304,11 +268,9 @@ should be able to compare the two algorithms:
 \end{figure}
 
 The following plots seem to validate our assumptions about the recursive
-algorithm : the recursive version has both a higher number of significant
+algorithm: the recursive version has both a higher number of significant
 digits (around 6.9 vs 5.9 with \mintinline{bash}{libinterflop_mca.so}) and a
 lower standard deviation with both backends.
-
-\bigbreak
 
 In this simple example, \mintinline{bash}{vfc_ci} allowed us to quickly compare
 two algorithms and confirm that our second one is numerically more stable than
