@@ -74,7 +74,7 @@ algorithms and propose new methods. It is not realistic to believe
 that any physicist/chemist will be able to read and develop a highly optimized
 C++ code tuned by \ac{HPC} experts. Similarly, it is not realistic
 either to believe that a code written by a random physicist/chemist will
-be be easily ported to \ac{GPU} by a \ac{HPC} expert without requiring a deep 
+be easily ported to \ac{GPU} by a \ac{HPC} expert without requiring a deep
 restructuring of the code. If a compromise
 is chosen between these two extremes, it is likely that it will
 converge to a code difficult to maintain by the physicist and
@@ -128,7 +128,7 @@ integration system which, instead of monitoring if tests pass or fail,
 keeps track of the numerical accuracy of the implemented kernels of \QMCkl{}.
 
 This tools relies on Verificarlo,\cite{verificarlo} a software
-developed by TREX members that implements Monte Carlo arithmetics at
+developed by TREX members that implements Monte Carlo arithmetic at
 the binary level via the LLVM compiler. The continuous integration
 tool Verificarlo-CI has been integrated into GitHub actions, such that
 by inserting probes in the tests provided with \QMCkl{} the numerical
@@ -320,7 +320,7 @@ the diagonal of the result of a matrix product.
 \subsection{Inverse of the Slater matrix}
 
 The Sherman-Morrison formula computes the inverse of the sum of a
-nonsingular matrix $A$ of size $n \times n$ and an outer product
+non-singular matrix $A$ of size $n \times n$ and an outer product
 $uv^T$ of vectors $u$ and $v$ of size $n$ :
 
 \begin{equation}
