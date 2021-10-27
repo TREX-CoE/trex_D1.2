@@ -297,7 +297,7 @@ calculated along with its inverse $S^{-1}$.
   
 Here again we encounter a general  function
 \mintinline{C}{qmckl_invert} for which we have also provided a small native
-library. An efficient implementation of the inverse is key since the 
+library. An efficient implementation of the inverse is crucial since the 
 scaling of the algorithm is cubic. We have specially provided hand-coded functions for
 the calculation of the inverse of small matrices ($M\le 5$) for which the
 $\mathcal{O}(N!)$ algorithm is faster than calling external library functions.
