@@ -15,8 +15,9 @@ There are three different \ac{QMC} codes in the \ac{TREX} \ac{CoE},
 weaknesses. Instead of optimizing the three codes independently for
 exascale architectures, or re-writing a new monolithic code, our
 strategy is instead to design a new library, \QMCkl{}, containing
-the best of each code. The functions available in this library will
-allow all three codes to benefit from the optimal implementation of
+the state-of-the-art expertise in the implementation of specific kernels present in
+each of the three codes. The functions available in this library will
+allow all the codes to benefit from the optimal implementation of
 the major kernels of \ac{QMC}.
 %We believe that this library will be
 %adopted by the community beyond the \ac{TREX} \ac{CoE}.
@@ -27,8 +28,8 @@ The three main objectives driving the development of \QMCkl{} are
 
 The ultimate goal of \QMCkl{} is to provide a high-performance
 implementation of the main computational kernels involved in \ac{QMC}
-methods, well adapted to exascale machines.
-In this particular \ac{WP}, we focus on the
+methods, ready to be adapted on exascale machines.
+In \ac{WP}1, we focus on the
 definition of the \ac{API}, the tests, and on a \emph{pedagogical}
 presentation of the algorithms. The high-performance aspects are
 delegated to \ac{WP}3, but there is nevertheless a strong interaction
@@ -87,6 +88,18 @@ implementations of this library.
 
 \section{Development environment}
 
+In the first months, a large effort was put in preparing the
+foundations of the library: the coding standards and rules, GNU Autotools
+configuration scripts, Makefiles, scripts to generate automatically
+the code and the documentation, unit testing, continuous integration,
+etc. It is important not to neglect the importance of all these
+developments which are not directly visible from outside of the project.
+Having spent a large effort of preparation pays a lot in the long term
+since is can dramatically enhance the productivity of the contributors
+of the library.
+We present in this section the major efforts that lead us to being 
+highly productive in implementing new kernels.
+
 \subsection{Literate programming}
 
 As the focus of this pedagogical implementation of \QMCkl{} is documentation,
@@ -102,20 +115,6 @@ development of Jupyter notebooks.
 Here, we have chosen {\orgmode} as it allows the simultaneous usage of
 multiple languages in the same notebook, and also doesn't impose to
 use a web browser for editing.
-
-\subsection{Configuration}
-
-In the first months, a large effort was put in preparing the
-foundations of the library: the coding standards and rules, GNU Autotools
-configuration scripts, Makefiles, scripts to generate automatically
-the code and the documentation, unit testing, continuous integration,
-etc. It is important not to neglect the importance of all these
-developments which are not directly visible from outside of the project.
-Having spent a large effort of preparation pays a lot in the long term
-since is can dramatically enhance the productivity of the contributors
-of the library.
-Now that this effort has been done, we are in a position where we are highly
-productive in implementing new kernels.
 
 \subsection{Control of Numerical accuracy}
 
@@ -168,13 +167,14 @@ wave function parameters contained in a \ac{TREXIO} file. This simple
 change is extremely beneficial to the user experience.
 
 
-\section{Implemented kernels}
+\section{Kernels implemented in QMCkl}
 
+After a large effort setting up a productive environment, in the last few months we focused on 
+implementing and documenting kernels. 
 The documentation of the current status of the library is available
 at \url{https://trex-coe.github.io/qmckl}, and the source code is
 available on the GitHub repository at \url{https://github.com/trex-coe/qmckl}.
-In the last few months, the majority of the effort was put in
-implementing and documenting kernels.  Our objective for this milestone
+Our objective for this milestone
 was to provide a library that is capable of computing the local energy
 (the central quantity in \ac{QMC}) for any arbitrary system described
 by a Slater determinant using a Gaussian atomic basis set:
@@ -202,20 +202,10 @@ with
 \end{array}
 \right|
 \]
-
-We have reached successfully this stage, and the implemented kernels are
+We have successfully reached this stage, and the implemented kernels are
 described in this section.
 
-The electron-electron $V_{\text{ee}}$ and nucleus-nucleus $V_{\text{NN}}$
-repulsion contributions to the potential, as well as the electron-nucleus
-$V_{\text{eN}}$ attraction have been implemented. These kernels are relatively
-straightforward. However, the computation of the kinetic energy $\hat{T}$ is
-more complex since it requires the evaluation of the wave function at the
-electron positions and its second derivative. In this section, we give some
-information about the kernels implemented for the computation of the kinetic
-energy.
-
-\subsection{Native linear algebra functions}
+\subsection{Low-level kernels}
 
 One of the main development guidelines is to maximize the use
 of \ac{BLAS}-like operations in the main kernels. The main \ac{BLAS} operations are
@@ -238,11 +228,23 @@ the \ac{API} and enabling hardware specific optimizations by \ac{HPC} experts
 without breaking user-space.
 
 A second and significant advantage of providing native implementations of
-such key functions is to enable new developers and scientists to easily
+such key functions is the \emph{separation of concerns} approach, which
+enables new developers and scientists to easily
 setup and install a minimal version of \QMCkl{} without struggling with
 a large set of dependencies, thus enabling easy access to new users.
 
-\subsection{Atomic basis functions}
+\subsection{High-level kernels}
+
+The electron-electron $V_{\text{ee}}$ and nucleus-nucleus $V_{\text{NN}}$
+repulsion contributions to the potential, as well as the electron-nucleus
+$V_{\text{eN}}$ attraction have been implemented. These kernels are relatively
+straightforward. However, the computation of the kinetic energy $\hat{T}$ is
+more complex since it requires the evaluation of the wave function at the
+electron positions and its second derivative. In the following, we give some
+information about the kernels implemented for the computation of the kinetic
+energy.
+
+\subsubsection{Atomic basis functions}
 
 The atomic basis set is defined as a list of shells. Each shell $s$ is
 centered on a nucleus $A$, possesses a given angular momentum $l$ and a
@@ -273,7 +275,7 @@ normalization of the different functions of the same shell to be
 different, as in GAMESS for example.
 
 
-\subsection{Molecular orbitals}
+\subsubsection{Molecular orbitals}
 
 The calculation of molecular orbitals (MOs) is one such key kernel which can
 become a bottleneck unless one uses a highly optimized implementation.
@@ -281,7 +283,7 @@ In this documentation implementation, we have provided an extremely simple
 algorithm which uses a \ac{BLAS} Level 3 call to a matrix multiplication
 routine (\mintinline{C}{qmckl_dgemm}),
 \[
-  \phi_i(r) = \sum_{j}C_{i,j}\chi_j(r),
+  \phi_i(r_j) = \sum_{k}C_{ik}\chi_k(r_j),
     \label{eq:mos}
 \]
 thus enabling \ac{HPC} experts to easily identify and optimize the calculation
@@ -289,7 +291,7 @@ of molecular orbitals. Note that in this pedagogical implementation of the
 library, the calculation of the \acp{MO} uses a native call to the
 \mintinline{C}{qmckl_dgemm} function.
 
-\subsection{Slater Determinants}
+\subsubsection{Slater Determinants}
 
 Once the molecular orbitals are implemented, the Slater matrix $S_{ij} = \phi_i(\mathbf{r}_j)$,
 where $\mathbf{r}_j$ represents the Cartesian coordinates of the $j$-th electron, needs to be
@@ -317,7 +319,7 @@ For the computation of the gradient and Laplacian, a special function
 \mintinline{C}{qmckl_dgemm_diag} has been implemented and used which provides
 the diagonal of the result of a matrix product. 
 
-\subsection{Inverse of the Slater matrix}
+\subsubsection{Inverse of the Slater matrix}
 
 The Sherman-Morrison formula computes the inverse of the sum of a
 non-singular matrix $A$ of size $n \times n$ and an outer product
@@ -355,7 +357,8 @@ thanks to Verificarlo-CI. The involved algorithms are:
 \section{Applications of QMCkl}
 
 The proposed library can already be used in production and for
-methodological developments. A few examples are presented in this section.
+methodological developments. A few independent examples of its
+first applications are presented in this section.
 
 \subsection{Jastrow factor in QMC=Chem}
 
@@ -410,18 +413,26 @@ flagship codes.
 \subsection{Debugging TREXIO files}
 
 We expect the \ac{TREXIO} library to be widely adopted by the community of
-quantum chemistry. But writing files in \ac{TREXIO} format requires the developer
+quantum chemistry. However, writing files in \ac{TREXIO} format requires the developer
 to be well aware of the conventions used in the code, namely the normalization factors
 of the basis functions, the order in which the Cartesian functions appear, etc.
 It is important to provide a tool with \ac{TREXIO}, that will allow the developer to
-check that the file written is valid. A good check is to very numerically that the
+check that the file written is valid. A good check is to verify numerically that the
 molecular orbitals are orthonormal. Passing this test implies that the data
 relative to the basis set is consistent with the coefficients of the molecular
 orbitals, so the \ac{TREXIO} file is valid. We have developed such a tool 
 writing a simple program which calls \QMCkl{} to evaluate the molecular orbitals
-at grid points.
+at grid points and compute a numerical approximation of the overlap matrix in the basis
+of \acp{MO}.
 
 \section{Future work}
+
+Within \ac{TREX}, the advances in \QMCkl{} will be twofold. Progress will be made on the
+development side of the library, by increasing the quality of the documentation of the
+currently implemented kernels, and by adding more kernels. In parallel, we will start to
+use more intensively \QMCkl{} within the codes, and the feedback given by the users
+will drive new improvements.
+
 
 \subsection{Development}
 
